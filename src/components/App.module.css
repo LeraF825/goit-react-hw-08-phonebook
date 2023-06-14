@@ -1,0 +1,16 @@
+.containerForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    margin-top: 30px;
+    
+    
+}
+.title{
+    color:rgb(6, 6, 145);
+}
+.partTitle{
+    color:rgb(255, 153, 0);
+}
