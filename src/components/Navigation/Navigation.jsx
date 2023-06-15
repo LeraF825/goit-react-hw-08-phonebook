@@ -11,7 +11,7 @@ const Navigation = () => {
   return (
     <Box display={{ md: 'flex' }} gap="20px">
       <NavLink to="/">
-        <Icon as={RiHome2Fill} color="#14107d" />
+        <Icon as={RiHome2Fill} color="#14107d"/>
       </NavLink>
       {isLoggedIn && (
         <NavLink to="/contacts">

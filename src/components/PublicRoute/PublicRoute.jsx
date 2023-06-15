@@ -5,7 +5,6 @@ import { getToken } from 'redux/auth/authSelector';
 
 const PublicRoute = ({ children }) => {
   const authToken = useSelector(getToken);
-  console.log('authToken', authToken);
   if (authToken) {
     return <Navigate to="/contacts" />;
   }

@@ -14,7 +14,6 @@ import {
     extraReducers: builder => {
       builder
         .addCase(registerUser.fulfilled, (state, action) => {
-          console.log(action.payload);
           state.user.items = action.payload.user;
           state.token = action.payload.token;
           state.isLoggedIn = true;

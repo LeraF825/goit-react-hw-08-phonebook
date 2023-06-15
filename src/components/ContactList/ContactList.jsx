@@ -14,7 +14,7 @@ const ContactsList = ({ title }) => {
     dispatch(fetchContacts());
   }, [dispatch]);
 
-  console.log('contacts ===> ', contacts);
+  
   return (
     <Box>
       <Text
