@@ -1,35 +1,54 @@
-import { nanoid } from 'nanoid';
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import { Filter } from './Filter/Filter';
-import s from './App.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContactsAction } from 'redux/contactsSlice';
-import { getContacts } from 'redux/contactsSelector';
-import { FcTwoSmartphones } from 'react-icons/fc';
+import { useDispatch } from 'react-redux';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { fetchCurrentUser } from 'redux/auth/authThunk';
+import Layout from './pages/Layout';
+import Home from './pages/Home';
+import PublicRoute from './PublicRoute/PublicRoute';
+import Registration from './pages/Registration';
+import LogIn from './pages/LogIn';
+import PrivateRoute from './PrivateRoute/PrivateRoute';
+import Contacts from './pages/Contacts';
 
-export const App = ()=>{
+export const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
 
-  const handleSubmit = ({ number, name }) => {
-    const contact = {
-      name,
-      number,
-      id: nanoid(),
-    };
-    dispatch(addContactsAction(contact));
-  };
+  useEffect(() => {
+    dispatch(fetchCurrentUser());
+  }, [dispatch]);
 
   return (
-    <div className={s.containerForm}>
-        <h1 className={s.title}>Phone
-          <span className={s.partTitle}>book</span>
-          <FcTwoSmartphones /></h1>
-        <ContactForm  handleSubmit={handleSubmit} contacts={contacts}/>
-        <h2 className={s.title}>Contacts</h2>
-          <Filter  />
-          <ContactList />
-      </div>
-  )
-}
+    <>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Registration />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LogIn />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/contacts"
+            element={
+              <PrivateRoute>
+                <Contacts />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Route>
+      </Routes>
+    </>
+  );
+};

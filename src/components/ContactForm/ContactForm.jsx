@@ -1,16 +1,19 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import s from './ContactForm.module.css';
-import { getContacts } from 'redux/contactsSelector';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts } from 'redux/contacts/contactsSelector';
+import { addContact } from 'redux/contacts/contactsThunk';
+import { Box, Button, FormLabel, Input, useToast } from '@chakra-ui/react';
 
 
 
-export const ContactForm =({ title, handleSubmit })=> {
-
+const ContactsForm = ({ title }) => {
   const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
+  const toast = useToast();
 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
   const handleInput = ev => {
     const { name, value } = ev.target;
 
@@ -25,6 +28,7 @@ export const ContactForm =({ title, handleSubmit })=> {
         alert('Error');
     }
   };
+
   const onSubmitData = ev => {
     ev.preventDefault();
     if (
@@ -32,20 +36,35 @@ export const ContactForm =({ title, handleSubmit })=> {
         contact => contact.name.toLowerCase() === name.toLowerCase()
       )
     ) {
-      return alert('This contact is already in the list');
+      return toast({
+        status: 'warning',
+        position: 'top-right',
+        description: `${name} is already in contacts.`,
+      });
     }
 
-    handleSubmit({ name, number });
+    const contact = {
+      name,
+      number,
+    };
+    dispatch(addContact(contact));
     setName('');
     setNumber('');
   };
 
-    return (
-      <form className={s.form} onSubmit={onSubmitData}>
-        <label className={s.label}>
+  return (
+    <Box
+      display={{ md: 'flex' }}
+      flexDirection="column"
+      w="300px"
+      border="1px solid black"
+      p="15px"
+      borderRadius="8px"
+    >
+      <form onSubmit={onSubmitData}>
+        <FormLabel name="name" display={{ md: 'flex' }} flexDirection="column">
           Name:
-          <input
-            className={s.inputName}
+          <Input
             type="text"
             name="name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -54,11 +73,14 @@ export const ContactForm =({ title, handleSubmit })=> {
             onChange={handleInput}
             value={name}
           />
-        </label>
-        <label className={s.label}>
+        </FormLabel>
+        <FormLabel
+          name="number"
+          display={{ md: 'flex' }}
+          flexDirection="column"
+        >
           Number:
-          <input
-            className={s.inputNumber}
+          <Input
             type="tel"
             name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -67,12 +89,13 @@ export const ContactForm =({ title, handleSubmit })=> {
             onChange={handleInput}
             value={number}
           />
-        </label>
-        <button className={s.btn} type="submit">
+        </FormLabel>
+        <Button colorScheme="orange" variant="solid" type="submit" mt="10px">
           Add contact
-        </button>
+        </Button>
       </form>
-    );
-  }
+    </Box>
+  );
+};
 
-
+export default ContactsForm;
